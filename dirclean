@@ -1,0 +1,23 @@
+#!/bin/bash
+cleanupDirectory=$1
+
+# check if the argument in the directory exists
+if [[ -z "$cleanupDirectory" ]]
+then 
+	echo "Need to pass a directory path as argument."
+	exit 0
+elif [[ -d $1 ]]
+then 
+	echo "$cleanupDirectory found."
+else 
+	echo "$cleanupDirectory does not exist on your file system"
+	exit 0
+fi
+
+# Only move files that are older than certain period, for example 3 days(make it optional)
+# Copying all jpeg files to ~/Picture directory
+find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec mv '{}' ~/Pictures \;
+
+# find out what kind of files are available in this direcotry
+# images will go to Pictures
+# videos will go to Videos
