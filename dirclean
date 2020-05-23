@@ -14,27 +14,33 @@ else
 	exit 0
 fi
 
+pictureFolder='~/Pictures'
+pictureDuration=2000
+
+#function that will evaluate file types
 function evalFile() {
 	if [[ $(file -b $1) =~ JPEG ]] || [[ $(file -b $1) =~ PNG ]] ;
 	then 
-		echo $1 'This got executed'
-
+		lastModificationDate=$(date +%s -r $1)
+		currentDate=$(date +%s)
+		elapsedTime=$((currentDate - lastModificationDate))
+		echo $elapsedTime
+		if [[ $elapsedTime -gt $pictureDuration ]]; then
+			moveToPictures="mv $1 $pictureFolder"
+			eval $moveToPictures
+			echo "Moved $1 to $pictureFolder"
+		fi	
+	
 	fi
 }
 
-#export -f evalFile
-
-# Only move files that are older than certain period, for example 3 days(make it optional)
-# Copying all jpeg files to ~/Picture directory
-
-#find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -exec mv '{}' ~/Pictures \;
-
-#find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -exec bash -c 'evalFile "{}"' \;
-
+#loop through each file in directory passed as an argument and execute them to te function evalFile
 for file in $1/*; do
 	evalFile "$file"
 done
 
-# find out what kind of files are available in this direcotry
-# images will go to Pictures
-# videos will go to Videos
+# Files will be sent to a directory inside main direcotries. For example images will go to ~/Pictures/fromDownloads. This 'fromDownloads' directory should be created automatically if not present.
+# videos will go to Videos etc.
+# decide where deb files go.
+# learn to how to maintain a log file.
+# Time period for a file to stay in the directory is now a constant in the script. Make it read as argument 
