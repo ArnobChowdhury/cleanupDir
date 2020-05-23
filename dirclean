@@ -14,9 +14,26 @@ else
 	exit 0
 fi
 
+function evalFile() {
+	if [[ $(file -b $1) =~ JPEG ]] || [[ $(file -b $1) =~ PNG ]] ;
+	then 
+		echo $1 'This got executed'
+
+	fi
+}
+
+#export -f evalFile
+
 # Only move files that are older than certain period, for example 3 days(make it optional)
 # Copying all jpeg files to ~/Picture directory
-find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec mv '{}' ~/Pictures \;
+
+#find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -exec mv '{}' ~/Pictures \;
+
+#find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -exec bash -c 'evalFile "{}"' \;
+
+for file in $1/*; do
+	evalFile "$file"
+done
 
 # find out what kind of files are available in this direcotry
 # images will go to Pictures
