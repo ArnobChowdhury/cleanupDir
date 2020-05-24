@@ -14,8 +14,8 @@ else
 	exit 0
 fi
 
-pictureFolder='~/Pictures'
-pictureDuration=2000
+readonly pictureFolder=~/Pictures
+readonly pictureOlderThan=2000
 
 #function that will evaluate file types
 function evalFile() {
@@ -24,11 +24,10 @@ function evalFile() {
 		lastModificationDate=$(date +%s -r $1)
 		currentDate=$(date +%s)
 		elapsedTime=$((currentDate - lastModificationDate))
-		echo $elapsedTime
-		if [[ $elapsedTime -gt $pictureDuration ]]; then
+		if [[ $elapsedTime -gt $pictureOlderThan ]]; then
 			moveToPictures="mv $1 $pictureFolder"
-			eval $moveToPictures
-			echo "Moved $1 to $pictureFolder"
+			eval $moveToPictures && echo "Moved $1 to $pictureFolder"
+
 		fi	
 	
 	fi
@@ -39,8 +38,7 @@ for file in $1/*; do
 	evalFile "$file"
 done
 
-# Files will be sent to a directory inside main direcotries. For example images will go to ~/Pictures/fromDownloads. This 'fromDownloads' directory should be created automatically if not present.
-# videos will go to Videos etc.
-# decide where deb files go.
-# learn to how to maintain a log file.
+# Files will be sent to their corresponding directories e.g. jpg and png images to ~Pictures and will be sorted in order of month it was downloaded in. answer is here https://unix.stackexchange.com/questions/470517/check-a-file-is-created-on-current-month
+# If Deb files are older than 10 days, they should be deleted.
+# Learn to how to maintain a log file.
 # Time period for a file to stay in the directory is now a constant in the script. Make it read as argument 
