@@ -14,7 +14,8 @@ else
 	exit 0
 fi
 
-readonly pictureFolder=~/Pictures
+readonly pictureDir=~/Pictures
+#change the seconds to 3 days
 readonly pictureOlderThan=2000
 
 #function that will evaluate file types
@@ -25,20 +26,31 @@ function evalFile() {
 		currentDate=$(date +%s)
 		elapsedTime=$((currentDate - lastModificationDate))
 		if [[ $elapsedTime -gt $pictureOlderThan ]]; then
-			moveToPictures="mv $1 $pictureFolder"
-			eval $moveToPictures && echo "Moved $1 to $pictureFolder"
+			MES=$(LANG=en_us_88591; date +"%b")
+			desDir="$pictureDir/$MES"
+			if [[ -d "$desDir" ]]
+			then 
+				moveToPictures="mv $1 $desDir"
+				eval $moveToPictures && echo "Moved $1 to $desDir"	
+			else 
+				echo "Making directory $MES in $pictureDir"
+				mkdir $desDir
+				moveToPictures="mv $1 $desDir"
+				eval $moveToPictures && echo "Moved $1 to $desDir"	
+			fi 
+			
 
 		fi	
 	
 	fi
 }
 
-#loop through each file in directory passed as an argument and execute them to te function evalFile
+#aksjdfaklsjdfoop through each file in directory passed as an argument and execute them to te function evalFile
 for file in $1/*; do
 	evalFile "$file"
 done
 
-# Files will be sent to their corresponding directories e.g. jpg and png images to ~Pictures and will be sorted in order of month it was downloaded in. answer is here https://unix.stackexchange.com/questions/470517/check-a-file-is-created-on-current-month
+# Now sending files to corresponding directories under Month.
 # If Deb files are older than 10 days, they should be deleted.
 # Learn to how to maintain a log file.
 # Time period for a file to stay in the directory is now a constant in the script. Make it read as argument 
